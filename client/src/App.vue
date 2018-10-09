@@ -3,20 +3,7 @@
     <img src="./assets/logo.png">
     <h1>{{ msg }}</h1>
     <h2>{{ hello }}</h2>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <h2>{{ num }}</h2>
   </div>
 </template>
 
@@ -26,13 +13,34 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      hello: ''
+      hello: '',
+      num: 0
     }
   },
   created () {
     axios.get('http://localhost:8888/')
     .then(response => {
       this.hello = response.data;
+    });
+
+    // Define a model for linear regression.
+    const model = tf.sequential();
+    model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+
+    // Prepare the model for training: Specify the loss and the optimizer.
+    model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
+
+    // Generate some synthetic data for training.
+    const xs = tf.tensor2d([1, 2, 3, 4], [4, 1]);
+    const ys = tf.tensor2d([1, 3, 5, 7], [4, 1]);
+
+    // Train the model using the data.
+    model.fit(xs, ys).then(() => {
+      // Use the model to do inference on a data point the model hasn't seen before:
+      // Open the browser devtools to see the output
+      let n = model.predict(tf.tensor2d([5], [1, 1])).flatten();
+      this.num = n.buffer().get(0);
+      n.print();
     });
   },
   methods: {
